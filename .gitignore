@@ -31,11 +31,11 @@ Thumbs.db
 uploads/
 
 # Ignore build artifacts
-wheels-on-rent-frontend/.next/
-wheels-on-rent-frontend/node_modules/
-wheels-on-rent-frontend/dist/
-wheels-on-rent-frontend/out/
-wheels-on-rent-frontend/.env*
-wheels-on-rent-frontend/*.log
-wheels-on-rent-frontend/*.zip
+frontend/.next/
+frontend/node_modules/
+frontend/dist/
+frontend/out/
+frontend/.env*
+frontend/*.log
+frontend/*.zip
 wheelsonrent/target/
