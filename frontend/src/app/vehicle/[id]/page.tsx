@@ -70,7 +70,7 @@ export default function VehicleDetailsPage({ params }: { params: Promise<{ id: s
             <CardHeader className="p-0">
                <div className="aspect-video w-full overflow-hidden">
                 <Image
-                  src={`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}${vehicle.imagePath}`}
+                  src={`${process.env.NEXT_PUBLIC_API_URL}${vehicle.imagePath}`}
                   alt={vehicle.name}
                   width={800}
                   height={600}

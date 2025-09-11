@@ -23,6 +23,7 @@ export interface Vehicle {
   imagePath: string;
   type: string;
   reviews: Review[];
+  status: any;
 }
 
 export function useVehicle(id: number | string) {
@@ -35,7 +36,7 @@ export function useVehicle(id: number | string) {
 
     const fetchVehicle = async () => {
       try {
-        const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/vehicles/${id}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/vehicles/${id}`);
         if (!response.ok) throw new Error('Failed to fetch vehicle');
         const data = await response.json();
         setVehicle(data);

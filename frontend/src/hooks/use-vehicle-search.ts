@@ -17,7 +17,7 @@ export const useVehicleSearch = (filters: SearchFilters, page = 0, size = 10) =>
     const fetchVehicles = async () => {
       setLoading(true)
       try {
-        const response = await axios.get(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/vehicles/search`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/vehicles/search`, {
           params: {
             ...filters,
             page,

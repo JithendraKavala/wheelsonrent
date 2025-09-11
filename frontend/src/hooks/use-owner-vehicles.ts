@@ -14,7 +14,7 @@ export default function useOwnerVehicles(token: string | null) {
         setError(null);
 
         try {
-            const res = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/owner/my-vehicles`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/owner/my-vehicles`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'

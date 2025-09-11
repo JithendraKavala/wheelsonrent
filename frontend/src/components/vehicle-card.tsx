@@ -14,7 +14,7 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
         <Badge variant="secondary" className="absolute top-3 right-3 z-10 font-semibold">{vehicle.type}</Badge>
         <Link href={`/vehicle/${vehicle.id}`} className="block rounded-lg aspect-[4/3] w-full overflow-hidden">
           <Image
-            src={`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}${vehicle.imagePath}`}
+            src={`${process.env.NEXT_PUBLIC_API_URL}${vehicle.imagePath}`}
             alt={vehicle.name}
             width={400}
             height={300}

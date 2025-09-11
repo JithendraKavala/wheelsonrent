@@ -6,7 +6,7 @@ export function useRentalHistory(token: string) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/rentals/history`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/rentals/history`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },

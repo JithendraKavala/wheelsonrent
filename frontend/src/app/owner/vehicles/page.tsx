@@ -84,7 +84,7 @@ export default function MyVehiclesPage() {
                 <TableRow key={vehicle.id}>
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-4">
-                      <Image src={`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}${vehicle.imagePath}`} alt={vehicle.name} width={40} height={40} className="rounded-md" data-ai-hint="car" />
+                      <Image src={`${process.env.NEXT_PUBLIC_API_URL}${vehicle.imagePath}`} alt={vehicle.name} width={40} height={40} className="rounded-md" data-ai-hint="car" />
                       <Link href={`/owner/vehicles/${vehicle.id}`}>{vehicle.name}</Link>
                     </div>
                   </TableCell>

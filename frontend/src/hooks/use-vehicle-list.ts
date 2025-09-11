@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-const API_URL = `http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/vehicles/list`
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/vehicles/list`
 
 export const useVehicleList = (page = 0, size = 10) => {
   const [vehicles, setVehicles] = useState([])

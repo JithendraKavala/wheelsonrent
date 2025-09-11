@@ -63,7 +63,7 @@ export default function AddVehiclePage() {
         formData.append('image', values.image[0]);
       }
 
-      const res = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/owner/add-vehicle`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/owner/add-vehicle`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,

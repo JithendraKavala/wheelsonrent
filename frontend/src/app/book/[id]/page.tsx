@@ -58,7 +58,7 @@ export default function BookVehiclePage({ params }: { params: Promise<{ id: stri
 
       console.log('Submitting booking:', bookingData);
 
-      const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/rentals/book`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/rentals/book`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ export default function BookVehiclePage({ params }: { params: Promise<{ id: stri
            <Card className="overflow-hidden shadow-lg">
                 <div className="aspect-[4/3] w-full overflow-hidden">
                     <Image
-                    src={`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}${vehicle.imagePath}`}
+                    src={`${process.env.NEXT_PUBLIC_API_URL}${vehicle.imagePath}`}
                     alt={vehicle.name}
                     width={800}
                     height={600}

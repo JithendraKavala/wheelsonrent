@@ -26,7 +26,7 @@ export default function useAdminDashboard() {
 
     const fetchDashboard = async () => {
       try {
-        const res = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/admin/dashboard-summary`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/dashboard-summary`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

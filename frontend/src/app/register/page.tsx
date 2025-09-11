@@ -38,7 +38,7 @@ const [error, setError] = useState<string | null>(null);
     setError(null);
   
     try {
-      const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/auth/register`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

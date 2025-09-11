@@ -57,7 +57,7 @@ export default function ReviewPage({ params }: { params: Promise<{ vehicleId: st
 
       console.log('Submitting review:', reviewData);
 
-      const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/reviews/${vehicleId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reviews/${vehicleId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

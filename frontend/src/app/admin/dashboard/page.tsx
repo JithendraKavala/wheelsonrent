@@ -32,7 +32,7 @@ export default function AdminDashboardPage() {
     setProcessingVehicles(prev => new Set(prev).add(vehicleId));
 
     try {
-      const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/admin/vehicle/${vehicleId}/approve`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/vehicle/${vehicleId}/approve`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ export default function AdminDashboardPage() {
     setProcessingVehicles(prev => new Set(prev).add(vehicleId));
 
     try {
-      const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/admin/vehicle/${vehicleId}/reject`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/vehicle/${vehicleId}/reject`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -266,7 +266,7 @@ export default function AdminDashboardPage() {
                           <TableCell>
                             <div className="flex items-center gap-4">
                               <Image 
-                                src={`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}${vehicle.imagePath}`} 
+                                src={`${process.env.NEXT_PUBLIC_API_URL}${vehicle.imagePath}`} 
                                 alt={vehicle.name} 
                                 width={80} 
                                 height={60} 

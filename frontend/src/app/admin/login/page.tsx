@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
     setIsLoading(true);
     setError(null);
 
-    fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/auth/login`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
