@@ -65,7 +65,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // or use "*" for all origins
+        config.setAllowedOrigins(List.of(
+            "http://localhost:3000", 
+            "https://wheelsonrent-dk9j.vercel.app"
+        )); // Allow local development and Vercel production
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
