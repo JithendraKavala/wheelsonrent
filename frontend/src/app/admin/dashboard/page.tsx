@@ -266,7 +266,7 @@ export default function AdminDashboardPage() {
                           <TableCell>
                             <div className="flex items-center gap-4">
                               <Image 
-                                src={`${process.env.NEXT_PUBLIC_API_URL}${vehicle.imagePath}`} 
+                                src={vehicle.imagePath} 
                                 alt={vehicle.name} 
                                 width={80} 
                                 height={60} 

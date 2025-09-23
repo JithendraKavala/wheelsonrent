@@ -35,7 +35,7 @@ import com.example.wheelsonrent.repository.RentalHistoryRepository;
 
 import lombok.RequiredArgsConstructor;
 
-
+import com.example.wheelsonrent.service.R2StorageService;
 
 @RestController
 @RequestMapping("/owner")
@@ -45,6 +45,7 @@ public class OwnerController {
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
     private final RentalHistoryRepository rentalHistoryRepository;
+    private final R2StorageService r2StorageService;
 
     @PostMapping("/add-vehicle")
     public ResponseEntity<?> uploadVehicle(
@@ -55,15 +56,8 @@ public class OwnerController {
             User owner = userRepository.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-            // Save image
-            String fileName = UUID.randomUUID() + "_" + dto.getImage().getOriginalFilename();
-            String uploadDir = System.getProperty("user.dir") + "/uploads/";
-            File dir = new File(uploadDir);
-            if (!dir.exists())
-                dir.mkdirs();
-
-            File dest = new File(uploadDir + fileName);
-            dto.getImage().transferTo(dest);
+            // Upload image to R2
+            String imageUrl = r2StorageService.uploadFile(dto.getImage());
 
             // Build vehicle entity
             Vehicle vehicle = new Vehicle();
@@ -78,7 +72,7 @@ public class OwnerController {
             vehicle.setType(dto.getType());
             vehicle.setApprovalStatus(ApprovalStatus.PENDING);
             vehicle.setAvailable(true);
-            vehicle.setImagePath("/uploads/" + fileName);
+            vehicle.setImagePath(imageUrl); // store R2/CDN URL
             vehicle.setOwner(owner);
 
             vehicleRepository.save(vehicle);
@@ -95,9 +89,11 @@ public class OwnerController {
         User owner = userRepository.findByEmail(auth.getName()).orElseThrow();
         return vehicleRepository.findByOwnerId(owner.getId());
     }
+
     @GetMapping("/rental-history")
-    public Page<RentalHistoryProjection> getRentalHistory(Authentication auth, @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size) {
+    public Page<RentalHistoryProjection> getRentalHistory(Authentication auth,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         User owner = userRepository.findByEmail(auth.getName()).orElseThrow();
         Pageable pageable = PageRequest.of(page, size, Sort.by("startTime").descending());
         // System.out.println("Owner ID: " + owner.getId()); // Debug logs
@@ -109,13 +105,15 @@ public class OwnerController {
         try {
             User owner = userRepository.findByEmail(auth.getName()).orElseThrow();
             double totalVehicles = vehicleRepository.countByOwnerId(owner.getId());
-            double approvedVehicles = vehicleRepository.countByOwnerIdAndApprovalStatus(owner.getId(), ApprovalStatus.APPROVED);
-            double pendingVehicles = vehicleRepository.countByOwnerIdAndApprovalStatus(owner.getId(), ApprovalStatus.PENDING);
+            double approvedVehicles = vehicleRepository.countByOwnerIdAndApprovalStatus(owner.getId(),
+                    ApprovalStatus.APPROVED);
+            double pendingVehicles = vehicleRepository.countByOwnerIdAndApprovalStatus(owner.getId(),
+                    ApprovalStatus.PENDING);
             double totalEarnings = rentalHistoryRepository.sumAmountByOwnerIdAndCompleted(owner.getId(), true);
 
             Pageable pageable = PageRequest.of(0, 5, Sort.by("startTime").descending());
-        // System.out.println("Owner ID: " + owner.getId()); // Debug logs
-            Page<RentalHistoryProjection> firstFive =  rentalHistoryRepository.findByOwnerId(owner.getId(), pageable);
+            // System.out.println("Owner ID: " + owner.getId()); // Debug logs
+            Page<RentalHistoryProjection> firstFive = rentalHistoryRepository.findByOwnerId(owner.getId(), pageable);
             return ResponseEntity.ok(new Object() {
                 public final double totalVehiclesCount = totalVehicles;
                 public final double approvedVehiclesCount = approvedVehicles;

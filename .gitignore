@@ -10,7 +10,7 @@ pnpm-lock.yaml
 package-lock.json
 
 # Java / Maven
-wheelsonrent/target/
+backend/target/
 *.class
 *.iml
 .classpath
@@ -38,4 +38,6 @@ frontend/out/
 frontend/.env*
 frontend/*.log
 frontend/*.zip
-wheelsonrent/target/
+backend/target/
+
+wheelsonrent.dump
