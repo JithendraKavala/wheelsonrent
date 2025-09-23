@@ -13,8 +13,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useVehicle } from '@/hooks/useVehicle';
 
-export default function BookVehiclePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = React.use(params);
+export default function BookVehiclePage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const { vehicle, loading, error } = useVehicle(id);
   const { toast } = useToast();
   const router = useRouter();

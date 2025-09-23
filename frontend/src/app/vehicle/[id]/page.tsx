@@ -13,8 +13,8 @@ import Link from 'next/link';
 
 // Mock similar vehicles - in a real app, this would come from the API
 
-export default function VehicleDetailsPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = React.use(params);
+export default function VehicleDetailsPage({ params }: { params:  {id: string } }) {
+  const { id } = params;
   console.log('Vehicle ID from params:', id, typeof id); // Debug log
   
   const { vehicle, loading, error } = useVehicle(id);

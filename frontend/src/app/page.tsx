@@ -37,7 +37,7 @@ export default function Home() {
       <section className="relative py-20 md:py-32 bg-card">
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-10" 
-          style={{backgroundImage: "url('https://placehold.co/1920x1080.png')"}}
+          // style={{backgroundImage: "url('https://placehold.co/1920x1080.png')"}}
           data-ai-hint="road trip car"
         ></div>
         <div className="container mx-auto px-4 text-center relative">

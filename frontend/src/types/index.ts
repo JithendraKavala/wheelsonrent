@@ -25,6 +25,41 @@ export type Vehicle = {
   reviews: Review[];
 };
 
+export type Rental = {
+  id: number;
+  completed: boolean;
+  startTime: string;
+  endTime: string;
+  totalCost: number;
+  vehicle : {
+    id: number; 
+    name: string;
+  }
+  renter : {
+    id: number;
+    name: string;
+    email: string;
+  }
+}
+
+export type PaginatedRentals = {
+  content: Rental[];
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number; // current page index
+  first: boolean;
+  last: boolean;
+  numberOfElements: number;
+};
+
+export type OwnerDashBoardStats = {
+  totalVehiclesCount: number;
+  approvedVehiclesCount: number;
+  pendingVehiclesCount: number;
+  totalEarningsAmount: number;
+  recentRentals: Rental[];
+};
 export type User = {
   id: string;
   fullName: string;

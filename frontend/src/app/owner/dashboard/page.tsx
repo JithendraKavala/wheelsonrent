@@ -1,10 +1,16 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { PlusCircle, Car, CheckCircle, Clock, Loader2 } from "lucide-react";
+import { PlusCircle, Car, CheckCircle, Clock, Loader2, IndianRupee} from "lucide-react";
 import Link from "next/link";
 import useOwnerVehicles from "@/hooks/use-owner-vehicles";
 import { useEffect, useState } from "react";
+import { Rental } from "@/types";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
+import useOwnerRentals from "@/hooks/use-owner-rentals";
+import useOwnerDashboard from "@/hooks/use-owner-dashboard";
+import { Badge } from "@/components/ui/badge";
 
 
 export default function OwnerDashboard() {
@@ -17,13 +23,15 @@ export default function OwnerDashboard() {
     }
   }, []);
 
-  const { vehicles, loading, error } = useOwnerVehicles(token);
-  console.log(vehicles);
-  const stats = [
-    { title: "Vehicles Listed", value: vehicles.length, icon: Car },
-    { title: "Approved", value: vehicles.filter(vehicle => vehicle.approvalStatus === 'APPROVED').length, icon: CheckCircle },
-    { title: "Pending Review", value: vehicles.filter(vehicle => vehicle.approvalStatus === 'PENDING').length, icon: Clock },
+  const { stats, loading, error } = useOwnerDashboard(token);
+  // console.log(vehicles);
+  const sections = [
+    { title: "Vehicles Listed", value: stats?.totalVehiclesCount, icon: Car },
+    { title: "Approved", value: stats?.approvedVehiclesCount, icon: CheckCircle },
+    { title: "Pending Review", value: stats?.pendingVehiclesCount, icon: Clock },
+    { title: "Total Earnings", value: `${stats?.totalEarningsAmount}`, icon:  IndianRupee},
   ];
+  // const { paginatedRentals } = useOwnerRentals(token, 1, 5);
 
   return loading ? (
     <div className="flex justify-center items-center h-screen">
@@ -48,8 +56,8 @@ export default function OwnerDashboard() {
         </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        {stats.map((stat, index) => (
+      <div className="grid gap-4 md:grid-cols-4">
+        {sections.map((stat, index) => (
           <Card key={index}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
@@ -69,7 +77,28 @@ export default function OwnerDashboard() {
                 <CardDescription>Your 5 most recent rentals.</CardDescription>
             </CardHeader>
             <CardContent>
-                <p className="text-sm text-muted-foreground">Rental history will be displayed here.</p>
+                <Table> 
+            <TableHeader>
+              <TableRow>
+                <TableHead>Vehicle</TableHead>
+                <TableHead>Renter</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Earnings</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {stats?.recentRentals.map((rental: Rental) => (
+                <TableRow key={rental.id}>
+                  <TableCell className="font-medium">{rental.vehicle.name}</TableCell>
+                  <TableCell>{rental.renter.name}</TableCell>
+                  <TableCell>{rental.startTime}</TableCell>
+                  <TableCell>{rental.completed ? <Badge variant={"secondary"} className="bg-green-100 text-green-800">Complted</Badge> : <Badge variant={"secondary"} className="whitespace-nowrap bg-red-100 text-red-800">Not Completed</Badge>}</TableCell>
+                  <TableCell className="text-right font-semibold text-primary">+${rental.totalCost.toFixed(2)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
             </CardContent>
         </Card>
          <Card>

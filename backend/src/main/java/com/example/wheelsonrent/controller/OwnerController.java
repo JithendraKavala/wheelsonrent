@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.TypeCollector;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,16 +27,24 @@ import com.example.wheelsonrent.repository.VehicleRepository;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Sort;
+import com.example.wheelsonrent.dto.RentalHistoryProjection;
+import com.example.wheelsonrent.entity.RentalHistory;
+import com.example.wheelsonrent.repository.RentalHistoryRepository;
 
 import lombok.RequiredArgsConstructor;
+
+
 
 @RestController
 @RequestMapping("/owner")
 @RequiredArgsConstructor
-public class VehicleController {
+public class OwnerController {
     @Autowired
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
+    private final RentalHistoryRepository rentalHistoryRepository;
 
     @PostMapping("/add-vehicle")
     public ResponseEntity<?> uploadVehicle(
@@ -83,5 +95,37 @@ public class VehicleController {
         User owner = userRepository.findByEmail(auth.getName()).orElseThrow();
         return vehicleRepository.findByOwnerId(owner.getId());
     }
-    
+    @GetMapping("/rental-history")
+    public Page<RentalHistoryProjection> getRentalHistory(Authentication auth, @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size) {
+        User owner = userRepository.findByEmail(auth.getName()).orElseThrow();
+        Pageable pageable = PageRequest.of(page, size, Sort.by("startTime").descending());
+        // System.out.println("Owner ID: " + owner.getId()); // Debug logs
+        return rentalHistoryRepository.findByOwnerId(owner.getId(), pageable);
+    }
+
+    @GetMapping("/dashboard-summary")
+    public ResponseEntity<?> getDashboardSummary(Authentication auth) {
+        try {
+            User owner = userRepository.findByEmail(auth.getName()).orElseThrow();
+            double totalVehicles = vehicleRepository.countByOwnerId(owner.getId());
+            double approvedVehicles = vehicleRepository.countByOwnerIdAndApprovalStatus(owner.getId(), ApprovalStatus.APPROVED);
+            double pendingVehicles = vehicleRepository.countByOwnerIdAndApprovalStatus(owner.getId(), ApprovalStatus.PENDING);
+            double totalEarnings = rentalHistoryRepository.sumAmountByOwnerIdAndCompleted(owner.getId(), true);
+
+            Pageable pageable = PageRequest.of(0, 5, Sort.by("startTime").descending());
+        // System.out.println("Owner ID: " + owner.getId()); // Debug logs
+            Page<RentalHistoryProjection> firstFive =  rentalHistoryRepository.findByOwnerId(owner.getId(), pageable);
+            return ResponseEntity.ok(new Object() {
+                public final double totalVehiclesCount = totalVehicles;
+                public final double approvedVehiclesCount = approvedVehicles;
+                public final double pendingVehiclesCount = pendingVehicles;
+                public final double totalEarningsAmount = totalEarnings;
+                public final List<RentalHistoryProjection> recentRentals = firstFive.getContent();
+            });
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to fetch dashboard summary: " + e.getMessage());
+        }
+    }
 }

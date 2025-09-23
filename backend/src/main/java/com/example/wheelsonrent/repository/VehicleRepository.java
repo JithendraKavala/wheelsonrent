@@ -19,6 +19,9 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
     List<Vehicle> findByOwnerId(Long ownerId);
 
+    double countByOwnerId(Long ownerId);
+    double countByOwnerIdAndApprovalStatus(Long ownerId, ApprovalStatus status);
+    
     Page<Vehicle> findByApprovalStatus(ApprovalStatus status, Pageable pageable);
 
     @Query("SELECT v FROM Vehicle v WHERE " +
