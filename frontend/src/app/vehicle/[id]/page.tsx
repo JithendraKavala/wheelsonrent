@@ -70,7 +70,7 @@ export default function VehicleDetailsPage({ params }: { params:  {id: string } 
             <CardHeader className="p-0">
                <div className="aspect-video w-full overflow-hidden">
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_API_URL}${vehicle.imagePath}`}
+                  src={vehicle.imagePath}
                   alt={vehicle.name}
                   width={800}
                   height={600}
