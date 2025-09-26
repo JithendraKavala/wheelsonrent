@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../wheels-on-rent-frontend"
+		},
+		{
+			"path": "../frontend"
 		}
 	],
 	"settings": {

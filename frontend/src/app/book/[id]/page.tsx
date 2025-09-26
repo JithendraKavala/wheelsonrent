@@ -134,7 +134,7 @@ export default function BookVehiclePage({ params }: { params: { id: string } }) 
            <Card className="overflow-hidden shadow-lg">
                 <div className="aspect-[4/3] w-full overflow-hidden">
                     <Image
-                    src={`${process.env.NEXT_PUBLIC_API_URL}${vehicle.imagePath}`}
+                    src={vehicle.imagePath}
                     alt={vehicle.name}
                     width={800}
                     height={600}

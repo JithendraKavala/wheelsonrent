@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.wheelsonrent.dto.VehicleDTO;
+import com.example.wheelsonrent.dto.VehicleShortProjection;
 import com.example.wheelsonrent.entity.Vehicle;
 import com.example.wheelsonrent.entity.VehicleType;
 import com.example.wheelsonrent.service.VehicleService;
@@ -24,14 +25,14 @@ public class VehicleListController {
     private final VehicleService vehicleService;
 
     @GetMapping("/list")
-    public Page<Vehicle> getVehicles(
+    public Page<VehicleShortProjection> getVehicles(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return vehicleService.getApprovedVehicles(page, size);
+        return vehicleService.getApprovedVehicles(page, size, VehicleShortProjection.class);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<Vehicle>> searchVehicles(
+    public ResponseEntity<Page<VehicleShortProjection>> searchVehicles(
             @RequestParam(required = false) VehicleType type,
             @RequestParam(required = false) String brand,
             @RequestParam(required = false) Double minRating,
@@ -46,12 +47,14 @@ public class VehicleListController {
                 ", page=" + page +
                 ", size=" + size);
         if (type == null && brand == "" && minRating == 0.0 && maxPrice == 0.0) {
-            return ResponseEntity.ok(vehicleService.getApprovedVehicles(page, size));
+            return ResponseEntity.ok(vehicleService.getApprovedVehicles(page, size, VehicleShortProjection.class));
         }
         if (maxPrice != null && maxPrice <= 0) {
             maxPrice = Double.MAX_VALUE; // Default to no max price if negative
         }
-        Page<Vehicle> vehicles = vehicleService.searchVehicles(type, brand, minRating, maxPrice, page, size);
+        Page<VehicleShortProjection> vehicles = vehicleService.searchVehicles(type, brand, minRating, maxPrice, page,
+                size,
+                VehicleShortProjection.class);
         return ResponseEntity.ok(vehicles);
     }
 

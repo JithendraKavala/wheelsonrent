@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.wheelsonrent.dto.ReviewDTO;
 import com.example.wheelsonrent.dto.VehicleDTO;
+import com.example.wheelsonrent.dto.VehicleShortProjection;
 import com.example.wheelsonrent.entity.ApprovalStatus;
 import com.example.wheelsonrent.entity.Vehicle;
 import com.example.wheelsonrent.entity.VehicleStatus;
@@ -44,14 +45,15 @@ public class VehicleService {
 
     }
 
-    public Page<Vehicle> getApprovedVehicles(int page, int size) {
-        return vehicleRepository.findByApprovalStatus(ApprovalStatus.APPROVED, PageRequest.of(page, size));
+    public <T> Page<T> getApprovedVehicles(int page, int size, Class<T> typeClass) {
+        return vehicleRepository.findByApprovalStatus(ApprovalStatus.APPROVED, PageRequest.of(page, size),
+                typeClass);
     }
 
-    public Page<Vehicle> searchVehicles(VehicleType type, String brand, Double minRating, Double maxPrice, int page,
-            int size) {
+    public <T> Page<T> searchVehicles(VehicleType type, String brand, Double minRating, Double maxPrice, int page,
+            int size, Class<T> typeClass) {
         PageRequest pageable = PageRequest.of(page, size);
-        return vehicleRepository.findByFilters(type, brand, minRating, maxPrice, pageable);
+        return vehicleRepository.findByFilters(type, brand, minRating, maxPrice, pageable, typeClass);
     }
 
     public VehicleDTO getVehicleDetails(Long id) {

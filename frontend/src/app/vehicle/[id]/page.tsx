@@ -140,9 +140,13 @@ export default function VehicleDetailsPage({ params }: { params:  {id: string } 
             </CardHeader>
             <CardContent>
                 <Button size="lg" className="w-full" asChild disabled={!vehicle.available}>
-                    <Link href={`/book/${vehicle.id}`}>
-                      {vehicle.status === "AVAILABLE" ? 'Reserve Now' : 'Not Available'}
+                    {
+                      vehicle.status === "AVAILABLE"  ?
+                      <Link href={`/book/${vehicle.id}` }>
+                      Reserve Now
                     </Link>
+                    : <span>Not Available</span>
+                    }
                 </Button>
             </CardContent>
             <CardFooter>

@@ -11,15 +11,26 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MailService {
 
-    private final JavaMailSender mailSender;
+    // private final JavaMailSender mailSender;
+    private final BrevoEmailService brevoEmailService;
 
     @Async
     public void sendBookingNotification(String to, String renterName, String vehicleName) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject("New Booking Alert for Your Vehicle");
-        message.setText("Your vehicle \"" + vehicleName + "\" has been booked by " + renterName + ".");
 
-        mailSender.send(message);
+        String subject = "Booking Confirmation for " + renterName;
+        String htmlBody = "<h3>Hi " + renterName + ",</h3>" +
+                "<p>Your booking for <strong>" + vehicleName + "</strong> is confirmed.</p>";
+
+        brevoEmailService.sendEmail(to, renterName, subject, htmlBody);
+    }
+
+    public boolean sendEmail(String to, String toName, String subject, String htmlContent) {
+        try {
+            brevoEmailService.sendEmail(to, toName, subject, htmlContent).block();
+            return true;
+        } catch (Exception e) {
+            System.err.println("Failed to send email: " + e.getMessage());
+            return false;
+        }
     }
 }
