@@ -46,4 +46,4 @@ remote_dump.dump
 
 local_dump.dump
 
-dump.shs
+dump.sh
