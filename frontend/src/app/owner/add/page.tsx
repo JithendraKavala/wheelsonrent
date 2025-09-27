@@ -1,9 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useState } from 'react';
+import dynamic from 'next/dynamic';
+
 import { Button } from '@/components/ui/button';
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
@@ -17,9 +19,15 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
-import 'leaflet/dist/leaflet.css';
-import MapPicker from '@/components/common/location-picker';
+// Dynamically import MapPicker for client-side only
+const MapPicker = dynamic(() => import('@/components/common/location-picker'), { ssr: false });
 
+// Import Leaflet CSS only on the client
+if (typeof window !== 'undefined') {
+  require('leaflet/dist/leaflet.css');
+}
+
+// Zod schema for vehicle form validation
 const vehicleSchema = z.object({
   name: z.string().min(1),
   brand: z.string().min(1),
@@ -41,20 +49,32 @@ type VehicleFormValues = z.infer<typeof vehicleSchema>;
 export default function AddVehiclePage() {
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [location, setLocation] = useState<{ lat: number; lng: number; address: string } | null>(null)
+  const [location, setLocation] = useState<{ lat: number; lng: number; address: string } | null>(null);
+
+  const form = useForm<VehicleFormValues>({
+    resolver: zodResolver(vehicleSchema),
+    defaultValues: {
+      name: '',
+      brand: '',
+      model: '',
+      type: 'CAR',
+      fuelType: 'Gasoline',
+      transmission: 'Automatic',
+      seats: 2,
+      pricePerHour: 10,
+      description: '',
+      latitude: 0,
+      longitude: 0,
+      address: '',
+    },
+  });
 
   const handleLocationSelect = (lat: number, lng: number, address: string) => {
     setLocation({ lat, lng, address });
     form.setValue('latitude', lat);
-  form.setValue('longitude', lng);
-  form.setValue('address', address);
-  }
-  const form = useForm<VehicleFormValues>({
-    resolver: zodResolver(vehicleSchema),
-    defaultValues: {
-      name: '', brand: '', model: '', seats: 2, pricePerHour: 10, description: '',latitude: 0, longitude: 0, address: '',
-    },
-  });
+    form.setValue('longitude', lng);
+    form.setValue('address', address);
+  };
 
   async function onSubmit(values: VehicleFormValues) {
     setLoading(true);
@@ -71,22 +91,21 @@ export default function AddVehiclePage() {
       formData.append('rentPerHour', values.pricePerHour.toString());
       formData.append('description', values.description);
       formData.append('type', values.type);
+
       if (location) {
         formData.append('latitude', location.lat.toString());
         formData.append('longitude', location.lng.toString());
         formData.append('address', location.address);
       }
+
       if (values.image?.[0]) {
         formData.append('image', values.image[0]);
       }
-      console.log(formData.forEach((value, key) => {
-        console.log(key, value);
-      }));
-      
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/owner/add-vehicle`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${typeof window !== 'undefined' ? localStorage.getItem('token') : ''}`,
         },
         body: formData,
       });
@@ -105,7 +124,6 @@ export default function AddVehiclePage() {
       setLoading(false);
     }
   }
-  
 
   return (
     <div className="container mx-auto flex items-center justify-center py-12 px-4">
@@ -119,14 +137,20 @@ export default function AddVehiclePage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {['name', 'brand', 'model'].map(field => (
-                  <FormField key={field} name={field as keyof VehicleFormValues} control={form.control} render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="capitalize">{field.name}</FormLabel>
-                      <FormControl><Input {...field} placeholder={`Enter ${field.name}`} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
+                  <FormField
+                    key={field}
+                    name={field as keyof VehicleFormValues}
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="capitalize">{field.name}</FormLabel>
+                        <FormControl><Input {...field} placeholder={`Enter ${field.name}`} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 ))}
+
                 <FormField name="type" control={form.control} render={({ field }) => (
                   <FormItem>
                     <FormLabel>Type</FormLabel>
@@ -140,6 +164,7 @@ export default function AddVehiclePage() {
                     <FormMessage />
                   </FormItem>
                 )} />
+
                 <FormField name="fuelType" control={form.control} render={({ field }) => (
                   <FormItem>
                     <FormLabel>Fuel Type</FormLabel>
@@ -154,6 +179,7 @@ export default function AddVehiclePage() {
                     <FormMessage />
                   </FormItem>
                 )} />
+
                 <FormField name="transmission" control={form.control} render={({ field }) => (
                   <FormItem>
                     <FormLabel>Transmission</FormLabel>
@@ -167,6 +193,7 @@ export default function AddVehiclePage() {
                     <FormMessage />
                   </FormItem>
                 )} />
+
                 <FormField name="seats" control={form.control} render={({ field }) => (
                   <FormItem>
                     <FormLabel>Seat Count</FormLabel>
@@ -174,6 +201,7 @@ export default function AddVehiclePage() {
                     <FormMessage />
                   </FormItem>
                 )} />
+
                 <FormField name="pricePerHour" control={form.control} render={({ field }) => (
                   <FormItem>
                     <FormLabel>Rent per Hour</FormLabel>
@@ -182,6 +210,7 @@ export default function AddVehiclePage() {
                   </FormItem>
                 )} />
               </div>
+
               <FormField name="description" control={form.control} render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description</FormLabel>
@@ -189,6 +218,7 @@ export default function AddVehiclePage() {
                   <FormMessage />
                 </FormItem>
               )} />
+
               <FormField name="image" control={form.control} render={({ field }) => (
                 <FormItem>
                   <FormLabel>Upload Image</FormLabel>
@@ -198,22 +228,26 @@ export default function AddVehiclePage() {
                   <FormMessage />
                 </FormItem>
               )} />
+
               <FormField name="address" control={form.control} render={() => (
                 <FormItem>
                   <FormLabel>Location</FormLabel>
                   <MapPicker onLocationSelect={handleLocationSelect} />
-                  {location && (
+                  {location ? (
                     <p className="mt-2">
                       Selected: {location.address} ({location.lat.toFixed(4)}, {location.lng.toFixed(4)})
                     </p>
+                  ) : (
+                    <p className="mt-2 text-sm text-muted-foreground">No location selected</p>
                   )}
-                  {!location && <p className="mt-2 text-sm text-muted-foreground">No location selected</p>}
                   <FormMessage />
                 </FormItem>
               )} />
+
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? 'Submitting...' : 'Submit for Approval'}
               </Button>
+
               {message && <p className="text-center text-sm text-muted-foreground mt-2">{message}</p>}
             </form>
           </Form>
