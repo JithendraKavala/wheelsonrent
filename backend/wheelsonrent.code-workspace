@@ -11,6 +11,7 @@
 		}
 	],
 	"settings": {
-		"java.configuration.updateBuildConfiguration": "automatic"
+		"java.configuration.updateBuildConfiguration": "automatic",
+		"liveServer.settings.multiRootWorkspaceName": "backend"
 	}
 }

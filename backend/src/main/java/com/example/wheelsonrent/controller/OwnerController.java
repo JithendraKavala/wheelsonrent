@@ -74,6 +74,9 @@ public class OwnerController {
             vehicle.setAvailable(true);
             vehicle.setImagePath(imageUrl); // store R2/CDN URL
             vehicle.setOwner(owner);
+            vehicle.setLatitude(dto.getLatitude());
+            vehicle.setLongitude(dto.getLongitude());
+            vehicle.setAddress(dto.getAddress());
 
             vehicleRepository.save(vehicle);
 

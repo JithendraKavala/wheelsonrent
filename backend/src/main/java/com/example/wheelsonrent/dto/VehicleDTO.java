@@ -29,6 +29,7 @@ public class VehicleDTO {
     private VehicleType type;
     private VehicleStatus status; // Assuming status is a string representation of VehicleStatus
     private List<ReviewDTO> reviews;
+    private String address;
 
     public static VehicleDTO from(Vehicle vehicle) {
         List<ReviewDTO> reviewDTOs = vehicle.getReviews().stream()
@@ -50,6 +51,7 @@ public class VehicleDTO {
                 vehicle.getImagePath(),
                 vehicle.getType(),
                 vehicle.getStatus(),
-                reviewDTOs);
+                reviewDTOs,
+                vehicle.getAddress());
     }
 }

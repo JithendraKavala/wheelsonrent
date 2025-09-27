@@ -1,6 +1,7 @@
 package com.example.wheelsonrent.controller;
 
 import com.example.wheelsonrent.dto.AdminDashboardDto;
+import com.example.wheelsonrent.dto.VehicleReivewProjection;
 import com.example.wheelsonrent.entity.ApprovalStatus;
 import com.example.wheelsonrent.entity.RentalHistory;
 import com.example.wheelsonrent.entity.Vehicle;
@@ -35,7 +36,8 @@ public class AdminController {
         long totalOwners = userRepository.countByRole(Role.OWNER);
         long totalBookings = rentalHistoryRepository.count();
         double totalEarnings = rentalHistoryRepository.getTotalEarnings();
-        List<Vehicle> pendingVehicles = vehicleRepository.findByApprovalStatus(ApprovalStatus.PENDING);
+        List<VehicleReivewProjection> pendingVehicles = vehicleRepository.findByApprovalStatus(ApprovalStatus.PENDING,
+                VehicleReivewProjection.class);
 
         return new AdminDashboardDto(
                 totalUsers,

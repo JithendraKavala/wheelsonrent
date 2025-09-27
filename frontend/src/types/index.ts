@@ -10,6 +10,9 @@ export type Vehicle = {
   gearType: 'Automatic' | 'Manual';
   imagePath: string;
   description: string;
+  latitude: number;
+  longitude: number;
+  address: string;
   owner: {
     id: number;
     name: string;

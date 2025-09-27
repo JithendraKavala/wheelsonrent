@@ -217,8 +217,7 @@ export default function VehicleApprovalPage() {
                   <TableRow>
                     <TableHead>Vehicle</TableHead>
                     <TableHead>Owner</TableHead>
-                    <TableHead>Approval Status</TableHead>
-                    <TableHead>Vehicle Status</TableHead>
+                    <TableHead>Address</TableHead>
                     <TableHead>Type</TableHead>
                     <TableHead>Details</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -229,22 +228,22 @@ export default function VehicleApprovalPage() {
                     const isProcessing = processingVehicles.has(vehicle.id);
                     return (
                       <TableRow key={vehicle.id}>
-                        <TableCell>
-                          <div className="flex items-center gap-4">
-                            <Image 
-                              src={`${process.env.NEXT_PUBLIC_API_URL}${vehicle.imagePath}`} 
-                              alt={vehicle.name} 
-                              width={80} 
-                              height={60} 
-                              className="rounded-md object-cover"
-                            />
-                            <div>
-                              <p className="font-medium">{vehicle.name}</p>
-                              <p className="text-sm text-muted-foreground">{vehicle.brand} {vehicle.model}</p>
-                              <p className="text-sm text-muted-foreground">₹{vehicle.rentPerHour}/hour</p>
+                        <TableCell className="max-w-xs">
+                            <div className="flex items-center gap-4 min-w-0">
+                              <Image 
+                                src={vehicle.imagePath} 
+                                alt={vehicle.name} 
+                                width={80} 
+                                height={60} 
+                                className="rounded-md object-cover flex-shrink-0"
+                              />
+                              <div className="flex flex-col min-w-0">
+                                <p className="font-medium truncate">{vehicle.name}</p>
+                                <p className="text-sm text-muted-foreground truncate">{vehicle.brand} {vehicle.model}</p>
+                                <p className="text-sm text-muted-foreground truncate">₹{vehicle.rentPerHour}/hour</p>
+                              </div>
                             </div>
-                          </div>
-                        </TableCell>
+                          </TableCell>
                         <TableCell>
                           <div>
                             <p className="font-medium">{vehicle.owner.name}</p>
@@ -252,13 +251,12 @@ export default function VehicleApprovalPage() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          {getStatusBadge(vehicle.approvalStatus)}
+                          <div className="max-w-xs">
+                            <span className="text-sm">{vehicle.address}</span>
+                          </div>
                         </TableCell>
                         <TableCell>
-                          {getVehicleStatusBadge(vehicle.status)}
-                        </TableCell>
-                        <TableCell>
-                          <div className="space-y-1">
+                          <div className="space-y-1 whitespace-nowrap">
                             <Badge variant="outline" className="capitalize">
                               {vehicle.type.toLowerCase()}
                             </Badge>
@@ -267,19 +265,19 @@ export default function VehicleApprovalPage() {
                         </TableCell>
                         <TableCell>
                           <div className="space-y-1 text-sm">
-                            <p><span className="font-medium">Fuel:</span> {vehicle.fuelType}</p>
-                            <p><span className="font-medium">Gear:</span> {vehicle.gearType}</p>
-                            <p><span className="font-medium">Rating:</span> {vehicle.averageRating}/5</p>
+                            <p className='whitespace-nowrap'><span className="font-medium">Fuel:</span> {vehicle.fuelType}</p>
+                            <p className='whitespace-nowrap'><span className="font-medium">Gear:</span> {vehicle.gearType}</p>
+                            <p className='whitespace-nowrap'><span className="font-medium">Rating:</span> {vehicle.averageRating}/5</p>
                           </div>
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-2">
-                            <Button size="sm" variant="outline" asChild disabled={isProcessing}>
+                            {/* <Button size="sm" variant="outline" asChild disabled={isProcessing}>
                               <Link href={`/admin/vehicles/${vehicle.id}`}>
                                 <Eye className="h-4 w-4" />
                               </Link>
-                            </Button>
-                            {vehicle.approvalStatus === 'PENDING' && (
+                            </Button> */}
+                            {vehicle.approvalStatus === 'PENDING'  || vehicle.id && (
                               <>
                                 <Button 
                                   size="sm" 

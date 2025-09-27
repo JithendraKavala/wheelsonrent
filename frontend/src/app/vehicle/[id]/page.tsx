@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardFooter } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { StarRating } from '@/components/common/star-rating';
-import { Users, Fuel, GitBranch } from 'lucide-react';
+import { Users, Fuel, GitBranch, LocateIcon } from 'lucide-react';
 import { useVehicle } from '@/hooks/useVehicle';
 import Link from 'next/link';
 
@@ -85,6 +85,10 @@ export default function VehicleDetailsPage({ params }: { params:  {id: string } 
                 <div className="flex items-center gap-2"><Fuel className="h-5 w-5 text-primary" /><span>{vehicle.fuelType}</span></div>
                 <div className="flex items-center gap-2"><GitBranch className="h-5 w-5 text-primary" /><span>{vehicle.gearType}</span></div>
               </div>
+               <div className="mt-4 text-sm text-muted-foreground line-clamp-3">
+          <LocateIcon className="h-4 w-4 inline-block mr-1 text-primary" />
+          {vehicle.address}
+        </div>
               <Separator className="my-6" />
               <h2 className="font-headline text-2xl font-semibold mb-4">Description</h2>
               <p className="text-muted-foreground">{vehicle.description}</p>

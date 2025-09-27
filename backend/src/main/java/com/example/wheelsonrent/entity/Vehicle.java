@@ -46,6 +46,10 @@ public class Vehicle {
     private ApprovalStatus approvalStatus = ApprovalStatus.PENDING;
 
     private VehicleStatus status = VehicleStatus.CHECKING;
+
+    private double latitude;
+    private double longitude;
+    private String address;
     @ManyToOne
     private User owner;
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)

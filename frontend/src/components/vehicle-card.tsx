@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Users, Fuel, GitBranch } from 'lucide-react';
+import { Users, Fuel, GitBranch, LocateIcon } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -44,6 +44,10 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
             <GitBranch className="h-4 w-4 text-primary" />
             <span>{vehicle.gearType}</span>
           </div>
+        </div>
+        <div className="mt-4 text-xs text-muted-foreground line-clamp-3">
+          <LocateIcon className="h-4 w-4 inline-block mr-1 text-primary" />
+          {vehicle.address}
         </div>
       </CardContent>
       <CardFooter className="p-4 flex justify-between items-center bg-muted/50">

@@ -3,24 +3,19 @@ package com.example.wheelsonrent.controller;
 import com.example.wheelsonrent.dto.LoginDto;
 import com.example.wheelsonrent.dto.RegisterDto;
 
-import com.example.wheelsonrent.entity.Role;
 import com.example.wheelsonrent.entity.User;
 import com.example.wheelsonrent.entity.VerificationToken;
 import com.example.wheelsonrent.repository.UserRepository;
 import com.example.wheelsonrent.repository.VerificationTokenRepository;
 import com.example.wheelsonrent.security.JwtUtil;
-import com.example.wheelsonrent.service.BrevoEmailService;
 import com.example.wheelsonrent.service.MailService;
-import com.sendgrid.helpers.mail.Mail;
 
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;

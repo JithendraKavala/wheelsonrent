@@ -16,6 +16,8 @@ public class AddVehicleDto {
     private String description;
     private VehicleType type;
     private MultipartFile image; // <-- needed for file upload
-
+    private double latitude;
+    private double longitude;
+    private String address;
     // getters + setters
 }

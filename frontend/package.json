@@ -34,12 +34,14 @@
     "date-fns": "3.6.0",
     "embla-carousel-react": "^8.6.0",
     "jwt-decode": "^4.0.0",
+    "leaflet": "^1.9.4",
     "lucide-react": "^0.525.0",
     "next": "14.2.5",
     "react": "18.3.1",
     "react-day-picker": "8.10.1",
     "react-dom": "18.3.1",
     "react-hook-form": "^7.59.0",
+    "react-leaflet": "^4.2.1",
     "recharts": "^3.2.0",
     "tailwind-merge": "^3.3.1",
     "zod": "^3.25.67"
@@ -47,6 +49,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/cli": "^4.1.11",
+    "@types/leaflet": "^1.9.20",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

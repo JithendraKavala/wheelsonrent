@@ -17,6 +17,9 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
+import 'leaflet/dist/leaflet.css';
+import MapPicker from '@/components/common/location-picker';
+
 const vehicleSchema = z.object({
   name: z.string().min(1),
   brand: z.string().min(1),
@@ -27,7 +30,10 @@ const vehicleSchema = z.object({
   seats: z.coerce.number().min(1),
   pricePerHour: z.coerce.number().min(1),
   description: z.string().min(10),
-  image: z.any().optional(),
+  image: z.any(),
+  latitude: z.number(),
+  longitude: z.number(),
+  address: z.string(),
 });
 
 type VehicleFormValues = z.infer<typeof vehicleSchema>;
@@ -35,11 +41,18 @@ type VehicleFormValues = z.infer<typeof vehicleSchema>;
 export default function AddVehiclePage() {
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [location, setLocation] = useState<{ lat: number; lng: number; address: string } | null>(null)
 
+  const handleLocationSelect = (lat: number, lng: number, address: string) => {
+    setLocation({ lat, lng, address });
+    form.setValue('latitude', lat);
+  form.setValue('longitude', lng);
+  form.setValue('address', address);
+  }
   const form = useForm<VehicleFormValues>({
     resolver: zodResolver(vehicleSchema),
     defaultValues: {
-      name: '', brand: '', model: '', seats: 2, pricePerHour: 10, description: '',
+      name: '', brand: '', model: '', seats: 2, pricePerHour: 10, description: '',latitude: 0, longitude: 0, address: '',
     },
   });
 
@@ -58,11 +71,18 @@ export default function AddVehiclePage() {
       formData.append('rentPerHour', values.pricePerHour.toString());
       formData.append('description', values.description);
       formData.append('type', values.type);
-
+      if (location) {
+        formData.append('latitude', location.lat.toString());
+        formData.append('longitude', location.lng.toString());
+        formData.append('address', location.address);
+      }
       if (values.image?.[0]) {
         formData.append('image', values.image[0]);
       }
-
+      console.log(formData.forEach((value, key) => {
+        console.log(key, value);
+      }));
+      
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/owner/add-vehicle`, {
         method: 'POST',
         headers: {
@@ -85,6 +105,7 @@ export default function AddVehiclePage() {
       setLoading(false);
     }
   }
+  
 
   return (
     <div className="container mx-auto flex items-center justify-center py-12 px-4">
@@ -174,6 +195,19 @@ export default function AddVehiclePage() {
                   <FormControl>
                     <Input type="file" className='cursor-pointer' accept="image/*" onChange={(e) => field.onChange(e.target.files)} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField name="address" control={form.control} render={() => (
+                <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <MapPicker onLocationSelect={handleLocationSelect} />
+                  {location && (
+                    <p className="mt-2">
+                      Selected: {location.address} ({location.lat.toFixed(4)}, {location.lng.toFixed(4)})
+                    </p>
+                  )}
+                  {!location && <p className="mt-2 text-sm text-muted-foreground">No location selected</p>}
                   <FormMessage />
                 </FormItem>
               )} />

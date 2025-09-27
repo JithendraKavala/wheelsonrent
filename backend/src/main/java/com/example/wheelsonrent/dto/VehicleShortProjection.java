@@ -16,4 +16,6 @@ public interface VehicleShortProjection {
     String getFuelType();
 
     String getGearType();
+
+    String getAddress();
 }

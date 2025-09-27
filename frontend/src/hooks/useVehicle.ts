@@ -24,6 +24,7 @@ export interface Vehicle {
   type: string;
   reviews: Review[];
   status: any;
+  address: string;
 }
 
 export function useVehicle(id: number | string) {

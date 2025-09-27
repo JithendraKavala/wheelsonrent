@@ -13,5 +13,5 @@ public class AdminDashboardDto {
     private long totalOwners;
     private long totalBookings;
     private double totalEarnings;
-    private List<Vehicle> pendingApprovals;
+    private List<VehicleReivewProjection> pendingApprovals;
 }

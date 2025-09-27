@@ -16,6 +16,8 @@ import com.example.wheelsonrent.dto.VehicleShortProjection;
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
         List<Vehicle> findByApprovalStatus(ApprovalStatus status);
 
+        <T> List<T> findByApprovalStatus(ApprovalStatus status, Class<T> type);
+
         List<Vehicle> findByTypeAndApprovalStatus(VehicleType type, ApprovalStatus status);
 
         List<Vehicle> findByOwnerId(Long ownerId);

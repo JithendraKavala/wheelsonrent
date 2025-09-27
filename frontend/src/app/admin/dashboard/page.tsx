@@ -248,101 +248,107 @@ export default function AdminDashboardPage() {
             {data.pendingApprovals?.length > 0 ? (
               <>
                 <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Vehicle</TableHead>
-                      <TableHead>Owner</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Details</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {displayedVehicles?.map((vehicle) => {
-                      const isProcessing = processingVehicles.has(vehicle.id);
-                      return (
-                        <TableRow key={vehicle.id}>
-                          <TableCell>
-                            <div className="flex items-center gap-4">
-                              <Image 
-                                src={vehicle.imagePath} 
-                                alt={vehicle.name} 
-                                width={80} 
-                                height={60} 
-                                className="rounded-md object-cover"
-                              />
-                              <div>
-                                <p className="font-medium">{vehicle.name}</p>
-                                <p className="text-sm text-muted-foreground">{vehicle.brand} {vehicle.model}</p>
-                                <p className="text-sm text-muted-foreground">₹{vehicle.rentPerHour}/hour</p>
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div>
-                              <p className="font-medium">{vehicle.owner.name}</p>
-                              <p className="text-sm text-muted-foreground">{vehicle.owner.email}</p>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            {getStatusBadge(vehicle.approvalStatus)}
-                          </TableCell>
-                          <TableCell>
-                            <div className="space-y-1">
-                              <Badge variant="outline" className="capitalize">
-                                {vehicle.type.toLowerCase()}
-                              </Badge>
-                              <p className="text-sm text-muted-foreground">{vehicle.seatCount} seats</p>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="space-y-1 text-sm">
-                              <p><span className="font-medium">Fuel:</span> {vehicle.fuelType}</p>
-                              <p><span className="font-medium">Gear:</span> {vehicle.gearType}</p>
-                              <p><span className="font-medium">Rating:</span> {vehicle.averageRating}/5</p>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <Button size="sm" variant="outline" asChild disabled={isProcessing}>
-                                <Link href={`/admin/vehicles/${vehicle.id}`}>
-                                  <Eye className="h-4 w-4" />
-                                </Link>
-                              </Button>
-                              <Button 
-                                size="sm" 
-                                variant="default" 
-                                onClick={() => approveVehicle(vehicle.id)}
-                                disabled={isProcessing}
-                              >
-                                {isProcessing ? (
-                                  <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : (
-                                  <CheckCircle className="h-4 w-4 mr-1" />
-                                )}
-                                {isProcessing ? 'Processing' : 'Approve'}
-                              </Button>
-                              <Button 
-                                size="sm" 
-                                variant="destructive"
-                                onClick={() => rejectVehicle(vehicle.id)}
-                                disabled={isProcessing}
-                              >
-                                {isProcessing ? (
-                                  <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : (
-                                  <XCircle className="h-4 w-4 mr-1" />
-                                )}
-                                {isProcessing ? 'Processing' : 'Reject'}
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
+                                <TableHeader>
+                                  <TableRow>
+                                    <TableHead>Vehicle</TableHead>
+                                    <TableHead>Owner</TableHead>
+                                    <TableHead>Address</TableHead>
+                                    <TableHead>Type</TableHead>
+                                    <TableHead>Details</TableHead>
+                                    <TableHead className="text-right">Actions</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {displayedVehicles.map((vehicle) => {
+                                    const isProcessing = processingVehicles.has(vehicle.id);
+                                    return (
+                                      <TableRow key={vehicle.id}>
+                                        <TableCell className="max-w-xs">
+                                            <div className="flex items-center gap-4 min-w-0">
+                                              <Image 
+                                                src={vehicle.imagePath} 
+                                                alt={vehicle.name} 
+                                                width={80} 
+                                                height={60} 
+                                                className="rounded-md object-cover flex-shrink-0"
+                                              />
+                                              <div className="flex flex-col min-w-0">
+                                                <p className="font-medium truncate">{vehicle.name}</p>
+                                                <p className="text-sm text-muted-foreground truncate">{vehicle.brand} {vehicle.model}</p>
+                                                <p className="text-sm text-muted-foreground truncate">₹{vehicle.rentPerHour}/hour</p>
+                                              </div>
+                                            </div>
+                                          </TableCell>
+                                        <TableCell>
+                                          <div>
+                                            <p className="font-medium">{vehicle.owner.name}</p>
+                                            <p className="text-sm text-muted-foreground">{vehicle.owner.email}</p>
+                                          </div>
+                                        </TableCell>
+                                        <TableCell>
+                                          <div className="max-w-xs">
+                                            <span className="text-sm">{vehicle.address}</span>
+                                          </div>
+                                        </TableCell>
+                                        <TableCell>
+                                          <div className="space-y-1 whitespace-nowrap">
+                                            <Badge variant="outline" className="capitalize">
+                                              {vehicle.type.toLowerCase()}
+                                            </Badge>
+                                            <p className="text-sm text-muted-foreground">{vehicle.seatCount} seats</p>
+                                          </div>
+                                        </TableCell>
+                                        <TableCell>
+                                          <div className="space-y-1 text-sm">
+                                            <p className='whitespace-nowrap'><span className="font-medium">Fuel:</span> {vehicle.fuelType}</p>
+                                            <p className='whitespace-nowrap'><span className="font-medium">Gear:</span> {vehicle.gearType}</p>
+                                            <p className='whitespace-nowrap'><span className="font-medium">Rating:</span> {vehicle.averageRating}/5</p>
+                                          </div>
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                          <div className="flex items-center justify-end gap-2">
+                                            {/* <Button size="sm" variant="outline" asChild disabled={isProcessing}>
+                                              <Link href={`/admin/vehicles/${vehicle.id}`}>
+                                                <Eye className="h-4 w-4" />
+                                              </Link>
+                                            </Button> */}
+                                            {vehicle.approvalStatus === 'PENDING'  || vehicle.id && (
+                                              <>
+                                                <Button 
+                                                  size="sm" 
+                                                  variant="default" 
+                                                  onClick={() => approveVehicle(vehicle.id)}
+                                                  disabled={isProcessing}
+                                                >
+                                                  {isProcessing ? (
+                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                  ) : (
+                                                    <CheckCircle className="h-4 w-4 mr-1" />
+                                                  )}
+                                                  {isProcessing ? 'Processing' : 'Approve'}
+                                                </Button>
+                                                <Button 
+                                                  size="sm" 
+                                                  variant="destructive"
+                                                  onClick={() => rejectVehicle(vehicle.id)}
+                                                  disabled={isProcessing}
+                                                >
+                                                  {isProcessing ? (
+                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                  ) : (
+                                                    <XCircle className="h-4 w-4 mr-1" />
+                                                  )}
+                                                  {isProcessing ? 'Processing' : 'Reject'}
+                                                </Button>
+                                              </>
+                                            )}
+                                          </div>
+                                        </TableCell>
+                                      </TableRow>
+                                    );
+                                  })}
+                                </TableBody>
+                              </Table>
                 
                 {data.pendingApprovals?.length > 5 && (
                   <div className="mt-4 text-center">
