@@ -11,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 import com.example.wheelsonrent.entity.ApprovalStatus;
 import com.example.wheelsonrent.entity.Vehicle;
 import com.example.wheelsonrent.entity.VehicleType;
-import com.example.wheelsonrent.dto.VehicleShortProjection;
 
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
         List<Vehicle> findByApprovalStatus(ApprovalStatus status);
@@ -38,6 +37,26 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
                         @Param("brand") String brand,
                         @Param("minRating") Double minRating,
                         @Param("maxPrice") Double maxPrice,
+                        Pageable pageable,
+                        Class<T> typeClass);
+
+        @Query("SELECT v FROM Vehicle v WHERE " +
+                        "(:type IS NULL OR v.type = :type) AND " +
+                        "(:brand IS NULL OR LOWER(v.brand) LIKE LOWER(CONCAT('%', :brand, '%'))) AND " +
+                        "(:minRating IS NULL OR v.averageRating >= :minRating) AND " +
+                        "(:maxPrice IS NULL OR v.rentPerHour <= :maxPrice) AND " +
+                        "(:latitude IS NULL OR :longitude IS NULL OR :radius IS NULL OR " +
+                        "6371 * acos(cos(radians(:latitude)) * cos(radians(v.latitude)) * " +
+                        "cos(radians(v.longitude) - radians(:longitude)) + " +
+                        "sin(radians(:latitude)) * sin(radians(v.latitude))) <= :radius)")
+        <T> Page<T> findByFiltersWithLocation(
+                        @Param("type") VehicleType type,
+                        @Param("brand") String brand,
+                        @Param("minRating") Double minRating,
+                        @Param("maxPrice") Double maxPrice,
+                        @Param("latitude") Double latitude,
+                        @Param("longitude") Double longitude,
+                        @Param("radius") Double radius,
                         Pageable pageable,
                         Class<T> typeClass);
 

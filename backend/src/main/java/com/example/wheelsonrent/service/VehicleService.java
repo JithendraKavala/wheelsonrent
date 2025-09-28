@@ -3,18 +3,12 @@ package com.example.wheelsonrent.service;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.example.wheelsonrent.dto.ReviewDTO;
 import com.example.wheelsonrent.dto.VehicleDTO;
-import com.example.wheelsonrent.dto.VehicleShortProjection;
 import com.example.wheelsonrent.entity.ApprovalStatus;
 import com.example.wheelsonrent.entity.Vehicle;
 import com.example.wheelsonrent.entity.VehicleStatus;
 import com.example.wheelsonrent.entity.VehicleType;
-import com.example.wheelsonrent.repository.RentalHistoryRepository;
 import com.example.wheelsonrent.repository.VehicleRepository;
-
-import java.time.LocalDate;
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
-    private final RentalHistoryRepository rentalHistoryRepository;
 
     public String approveVehicle(Long vehicleId) {
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
@@ -53,6 +46,20 @@ public class VehicleService {
     public <T> Page<T> searchVehicles(VehicleType type, String brand, Double minRating, Double maxPrice, int page,
             int size, Class<T> typeClass) {
         PageRequest pageable = PageRequest.of(page, size);
+        return vehicleRepository.findByFilters(type, brand, minRating, maxPrice, pageable, typeClass);
+    }
+
+    public <T> Page<T> searchVehiclesWithLocation(VehicleType type, String brand, Double minRating, Double maxPrice, 
+            Double latitude, Double longitude, Double radius, int page, int size, Class<T> typeClass) {
+        PageRequest pageable = PageRequest.of(page, size);
+        
+        // If location parameters are provided, use location-based search
+        if (latitude != null && longitude != null && radius != null && radius > 0) {
+            return vehicleRepository.findByFiltersWithLocation(type, brand, minRating, maxPrice, 
+                    latitude, longitude, radius, pageable, typeClass);
+        }
+        
+        // Otherwise use regular search
         return vehicleRepository.findByFilters(type, brand, minRating, maxPrice, pageable, typeClass);
     }
 

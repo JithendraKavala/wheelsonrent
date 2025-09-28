@@ -10,6 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+// import { AdminGuard } from "@/components/common/role-guard";
 
 export default function AdminDashboardPage() {
   const { data, loading, error } = useAdminDashboard();

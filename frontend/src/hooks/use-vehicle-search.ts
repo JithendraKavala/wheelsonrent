@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import axios from 'axios'
 
 interface SearchFilters {
@@ -6,6 +6,9 @@ interface SearchFilters {
   brand?: string;
   minRating?: number;
   maxPrice?: number;
+  latitude?: number;
+  longitude?: number;
+  radius?: number;
 }
 
 export const useVehicleSearch = (filters: SearchFilters, page = 0, size = 10) => {
@@ -13,16 +16,19 @@ export const useVehicleSearch = (filters: SearchFilters, page = 0, size = 10) =>
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Memoize params to prevent unnecessary API calls
+  const params = useMemo(() => ({
+    ...filters,
+    page,
+    size,
+  }), [filters, page, size])
+
   useEffect(() => {
     const fetchVehicles = async () => {
       setLoading(true)
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/vehicles/search`, {
-          params: {
-            ...filters,
-            page,
-            size,
-          },
+          params,
         })
         setData({
           vehicles: response.data.content,
@@ -37,7 +43,7 @@ export const useVehicleSearch = (filters: SearchFilters, page = 0, size = 10) =>
     }
 
     fetchVehicles()
-  }, [filters, page, size])
+  }, [params])
 
   return { ...data, loading, error }
 }

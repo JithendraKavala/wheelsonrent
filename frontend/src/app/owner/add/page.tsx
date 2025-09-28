@@ -18,6 +18,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+// import { OwnerGuard } from '@/components/common/role-guard';
 
 // Dynamically import MapPicker for client-side only
 const MapPicker = dynamic(() => import('@/components/common/location-picker'), { ssr: false });
@@ -127,12 +128,12 @@ export default function AddVehiclePage() {
 
   return (
     <div className="container mx-auto flex items-center justify-center py-12 px-4">
-      <Card className="w-full max-w-2xl">
-        <CardHeader>
-          <CardTitle className="text-3xl">Add a New Vehicle</CardTitle>
-          <CardDescription>Fill out the details below to list your vehicle.</CardDescription>
-        </CardHeader>
-        <CardContent>
+        <Card className="w-full max-w-2xl">
+          <CardHeader>
+            <CardTitle className="text-3xl">Add a New Vehicle</CardTitle>
+            <CardDescription>Fill out the details below to list your vehicle.</CardDescription>
+          </CardHeader>
+          <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

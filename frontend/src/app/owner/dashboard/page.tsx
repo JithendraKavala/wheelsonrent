@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import useOwnerRentals from "@/hooks/use-owner-rentals";
 import useOwnerDashboard from "@/hooks/use-owner-dashboard";
 import { Badge } from "@/components/ui/badge";
+// import { OwnerGuard } from "@/components/common/role-guard";
 
 
 export default function OwnerDashboard() {

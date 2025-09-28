@@ -5,13 +5,16 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Search, X, Loader2 } from 'lucide-react';
+import { Search, X, Loader2, MapPin } from 'lucide-react';
 import { useVehicleSearch } from '@/hooks/use-vehicle-search';
-import { useState } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Vehicle } from '@/types';
 import { Badge } from '@/components/ui/badge';
+import LocationSearch from '@/components/common/location-search';
 
-export default function BrowsePage() {
+function BrowsePageContent() {
+  const searchParams = useSearchParams();
   const [page, setPage] = useState(0);
   const [filters, setFilters] = useState({
     type: '',
@@ -25,8 +28,32 @@ export default function BrowsePage() {
     minRating: 0,
     maxPrice: 0
   });
+  const [location, setLocation] = useState<{ lat: number; lng: number; address: string } | null>(null);
+  const [radius, setRadius] = useState(50); // Default 50km radius
 
-  const { vehicles, loading, error, totalPages, totalItems } = useVehicleSearch(appliedFilters, page, 12);
+  // Initialize filters from URL parameters
+  useEffect(() => {
+    const urlType = searchParams.get('type');
+    const urlLocation = searchParams.get('location');
+    
+    if (urlType) {
+      setFilters(prev => ({ ...prev, type: urlType }));
+      setAppliedFilters(prev => ({ ...prev, type: urlType }));
+    }
+    
+    // Note: For location, you might want to geocode the string to lat/lng
+    // For now, we'll just show the location string in the search
+  }, [searchParams]);
+
+  // Create search filters with location data - memoized to prevent infinite re-renders
+  const searchFilters = useMemo(() => ({
+    ...appliedFilters,
+    latitude: location?.lat,
+    longitude: location?.lng,
+    radius: location ? radius : undefined
+  }), [appliedFilters, location, radius]);
+  
+  const { vehicles, loading, error, totalPages, totalItems } = useVehicleSearch(searchFilters, page, 12);
 
   const handleFilterChange = (key: string, value: string | number) => {
     setFilters(prev => ({
@@ -49,10 +76,12 @@ export default function BrowsePage() {
     };
     setFilters(emptyFilters);
     setAppliedFilters(emptyFilters);
+    setLocation(null);
+    setRadius(50);
     setPage(0);
   };
 
-  const hasActiveFilters = appliedFilters.type || appliedFilters.brand || appliedFilters.minRating > 0 || appliedFilters.maxPrice > 0;
+  const hasActiveFilters = appliedFilters.type || appliedFilters.brand || appliedFilters.minRating > 0 || appliedFilters.maxPrice > 0 || location;
 
   if (loading) {
     return (
@@ -99,7 +128,7 @@ export default function BrowsePage() {
       {/* Filters */}
       <Card className="mb-8 p-4 shadow-sm">
         <CardContent className="p-2">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
             <div className="space-y-2">
               <label className="text-sm font-medium">Vehicle Type</label>
               <Select 
@@ -152,6 +181,32 @@ export default function BrowsePage() {
                 onChange={(e) => handleFilterChange('maxPrice', parseInt(e.target.value) || 0)}
               />
             </div>
+            <div className="space-y-2">
+              <LocationSearch 
+                onLocationSelect={setLocation}
+                placeholder="Search location..."
+              />
+              {location && (
+                <div className="space-y-1">
+                  <label className="text-xs font-medium">Search Radius (km)</label>
+                  <Select 
+                    value={radius.toString()} 
+                    onValueChange={(value) => setRadius(parseInt(value))}
+                  >
+                    <SelectTrigger className="h-8 text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="10">10 km</SelectItem>
+                      <SelectItem value="25">25 km</SelectItem>
+                      <SelectItem value="50">50 km</SelectItem>
+                      <SelectItem value="100">100 km</SelectItem>
+                      <SelectItem value="200">200 km</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
             <div className="flex gap-2">
               <Button className="flex-1" onClick={handleSearch}>
                 <Search className="mr-2 h-4 w-4" />
@@ -174,24 +229,30 @@ export default function BrowsePage() {
             <div className="mt-4 pt-4 border-t">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-sm text-muted-foreground">Active filters:</span>
-                {filters.type && (
+                {appliedFilters.type && (
                   <Badge variant="secondary" className="text-xs">
-                    Type: {filters.type}
+                    Type: {appliedFilters.type}
                   </Badge>
                 )}
-                {filters.brand && (
+                {appliedFilters.brand && (
                   <Badge variant="secondary" className="text-xs">
-                    Brand: {filters.brand}
+                    Brand: {appliedFilters.brand}
                   </Badge>
                 )}
-                {filters.minRating > 0 && (
+                {appliedFilters.minRating > 0 && (
                   <Badge variant="secondary" className="text-xs">
-                    Rating: {filters.minRating}+ stars
+                    Rating: {appliedFilters.minRating}+ stars
                   </Badge>
                 )}
-                {filters.maxPrice > 0 && (
+                {appliedFilters.maxPrice > 0 && (
                   <Badge variant="secondary" className="text-xs">
-                    Max Price: ₹{filters.maxPrice}/hour
+                    Max Price: ₹{appliedFilters.maxPrice}/hour
+                  </Badge>
+                )}
+                {location && (
+                  <Badge variant="secondary" className="text-xs">
+                    <MapPin className="mr-1 h-3 w-3" />
+                    {location.address.split(',').slice(0, 2).join(', ')} ({radius}km)
                   </Badge>
                 )}
                 <Button 
@@ -254,5 +315,19 @@ export default function BrowsePage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function BrowsePage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex justify-center items-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      </div>
+    }>
+      <BrowsePageContent />
+    </Suspense>
   );
 }

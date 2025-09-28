@@ -11,7 +11,8 @@ export default function Header() {
 
   const navLinks = [
     { href: '/', label: 'Home' },
-    { href: '/browse', label: 'Browse Vehicles' },
+    { href: '/how-it-works', label: 'How It Works' },
+    { href: '/contact', label: 'Contact' },
   ];
 
   const roleLinks = (() => {
@@ -59,11 +60,14 @@ export default function Header() {
                     <Button variant="ghost" asChild>
                       <Link href="/login">Log In</Link>
                     </Button>
-                    <Button className="bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
-                      <Link href="/register">Sign Up</Link>
-                    </Button>
                   </>
                 )}
+                <Button className="bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
+                  <Link href="/browse">🔍 Rent a Vehicle</Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link href="/owner/add">➕ List Your Vehicle</Link>
+                </Button>
               </>
             )}
           </nav>
@@ -97,11 +101,14 @@ export default function Header() {
                       {isLoggedIn ? (
                          <Button variant="ghost" onClick={logout}>Log Out</Button>
                       ) : (
-                        <>
-                          <Button variant="ghost" asChild><Link href="/login">Log In</Link></Button>
-                          <Button className="bg-accent hover:bg-accent/90 text-accent-foreground" asChild><Link href="/register">Sign Up</Link></Button>
-                        </>
+                        <Button variant="ghost" asChild><Link href="/login">Log In</Link></Button>
                       )}
+                      {/* <Button className="bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
+                        <Link href="/browse">🔍 Rent a Vehicle</Link>
+                      </Button>
+                      <Button variant="outline" asChild>
+                        <Link href="/owner/add">➕ List Your Vehicle</Link>
+                      </Button> */}
                     </>
                   )}
                 </div>
